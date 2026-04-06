@@ -1,6 +1,5 @@
 import Navbar from "@/components/ui/layout/Navbar";
-import BookCard from "./Books/List";
-import { mockBooks } from "@/features/books/mock";
+import BookList from "./Books/List";
 import { useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -16,7 +15,7 @@ export default function Dashboard() {
     };
 
     return (
-        <section className="min-h-screen bg-slate-50">
+        <section className="min-h-screen bg-slate-50 pb-20 font-sans">
             <Navbar />
 
             <main className="max-w-7xl mx-auto px-6 py-12 space-y-12">
@@ -35,11 +34,11 @@ export default function Dashboard() {
                 </div>
 
                 {/* Carousel Section */}
-                <div className="space-y-6">
+                <div className="space-y-8">
                     <div className="flex items-center justify-between">
                         <div>
                             <h2 className="text-3xl font-black text-slate-800">Featured Books</h2>
-                            <p className="text-slate-500 font-bold">Handpicked for you</p>
+                            <p className="text-slate-500 font-bold">Handpicked based on your interests.</p>
                         </div>
                         <div className="flex gap-2">
                             <button 
@@ -57,19 +56,13 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    <div 
-                        ref={scrollRef}
-                        className="flex gap-6 overflow-x-auto pb-8 scrollbar-hide snap-x snap-mandatory no-scrollbar"
-                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                    >
-                        {mockBooks.map((book) => (
-                            <div key={book.id} className="snap-center min-w-full sm:min-w-[40%] md:min-w-[30%] lg:min-w-[23%] flex-shrink-0">
-                                <BookCard book={book} />
-                            </div>
-                        ))}
+                    <div ref={scrollRef}>
+                        <BookList layout="carousel" />
                     </div>
                 </div>
             </main>
         </section>
     );
-}
+}
+
+
