@@ -1,18 +1,11 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/store/cartSlice";
 import { useQuery } from "@tanstack/react-query";
 import { getBooks } from "@/features/books/api";
 import { Loader2, AlertCircle } from "lucide-react";
-
-export interface Book {
-  id: string;
-  title: string;
-  author: string;
-  price: number;
-  image_url: string;
-}
+import { type Book } from "@/features/books/types";
 
 // Reusable individual Card component
 export function BookCard({ book }: { book: Book }) {
@@ -74,8 +67,8 @@ export function BookCard({ book }: { book: Book }) {
     );
 }
 
-// Main List component with TanStack Query
-export default function BookList({ layout = "grid" }: { layout?: "grid" | "carousel" }) {
+// Main List component with TanStack Query - uses forwardRef for Dashboard carousel controls
+const BookList = forwardRef<HTMLDivElement, { layout?: "grid" | "carousel" }>(({ layout = "grid" }, ref) => {
     const { data: books, isLoading, error } = useQuery<Book[]>({
         queryKey: ["books"],
         queryFn: getBooks,
@@ -101,20 +94,29 @@ export default function BookList({ layout = "grid" }: { layout?: "grid" | "carou
                 <AlertCircle size={48} className="animate-bounce" />
                 <div className="text-center">
                     <h3 className="text-xl font-bold">Error Loading Collection</h3>
-                    <p className="font-medium opacity-80">Make sure your backend is running at http://localhost:5000</p>
+                    <p className="font-medium opacity-80">Check your backend configuration and try again.</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className={`gap-6 ${layout === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4" : "flex overflow-x-auto pb-8 no-scrollbar h-full"}`}>
+        <div 
+            ref={ref}
+            className={`gap-6 ${layout === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4" : "flex overflow-x-auto pb-8 no-scrollbar h-full snap-x snap-mandatory"}`}
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
             {books?.map((book) => (
-                <div key={book.id} className={`${layout === "grid" ? "" : "flex-shrink-0 min-w-[280px]"}`}>
+                <div key={book.id} className={`${layout === "grid" ? "" : "flex-shrink-0 min-w-full sm:min-w-[40%] md:min-w-[30%] lg:min-w-[23%] snap-center"}`}>
                     <BookCard book={book} />
                 </div>
             ))}
         </div>
     );
-}
+});
+
+BookList.displayName = "BookList";
+
+export default BookList;
+
 

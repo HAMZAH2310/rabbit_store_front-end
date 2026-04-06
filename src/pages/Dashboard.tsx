@@ -56,8 +56,8 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    <div ref={scrollRef}>
-                        <BookList layout="carousel" />
+                    <div>
+                        <BookList ref={scrollRef} layout="carousel" />
                     </div>
                 </div>
             </main>
